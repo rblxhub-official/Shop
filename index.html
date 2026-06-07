@@ -3,82 +3,170 @@
 <head>
   <title>RBLX Shop</title>
 
+  <!-- MOBILE SUPPORT -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body{
       font-family:Arial;
       background:#111;
       color:white;
+      margin:0;
       text-align:center;
     }
 
+    /* TOP BAR */
+    #topBar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px;
+      background:#0f0f0f;
+    }
+
+    #bell{
+      font-size:24px;
+      cursor:pointer;
+      padding:10px;
+    }
+
+    /* UPDATE PANEL */
+    #updatePanel{
+      display:none;
+      position:absolute;
+      right:10px;
+      top:60px;
+      background:#1e1e1e;
+      width:260px;
+      border-radius:10px;
+      padding:10px;
+      box-shadow:0 0 10px black;
+      text-align:left;
+      z-index:999;
+    }
+
+    .update-item{
+      background:#222;
+      padding:8px;
+      margin:5px 0;
+      border-radius:6px;
+      font-size:13px;
+    }
+
+    /* SHOP */
     .item{
       background:#1e1e1e;
-      margin:10px;
-      padding:10px;
+      margin:10px auto;
+      padding:15px;
       border-radius:10px;
+      width:90%;
+      max-width:300px;
     }
 
     button{
-      padding:8px 12px;
+      padding:10px;
       border:none;
       background:#5865F2;
       color:white;
       border-radius:6px;
       cursor:pointer;
+      width:100%;
+    }
+
+    button:hover{
+      opacity:0.9;
     }
 
     input, textarea{
-      width:80%;
+      width:90%;
+      max-width:300px;
       padding:10px;
-      margin:5px;
+      margin:5px auto;
       border-radius:6px;
+      border:none;
+      display:block;
+    }
+
+    #cartList{
+      padding:0;
+    }
+
+    #cartList li{
+      list-style:none;
+      background:#222;
+      margin:5px auto;
+      padding:10px;
+      width:90%;
+      max-width:300
+      display:flex;
+      justify-content:space-between;
+      border-radius:8px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>🛒 Game Pass Shop</h1>
+<!-- TOP BAR -->
+<div id="topBar">
+  <h2>🛒 RBLX Shop</h2>
 
+  <div id="bell" onclick="toggleUpdates()">
+    🔔
+  </div>
+</div>
+
+<!-- UPDATE PANEL -->
+<div id="updatePanel">
+  <h3>📢 Latest Updates</h3>
+  <div id="updateList"></div>
+</div>
+
+<!-- SHOP -->
 <div class="item">
   <h3>⭐ VIP Access</h3>
   <button onclick="addToCart('VIP Access')">Add to Cart</button>
 </div>
 
 <div class="item">
-  <h3>⚡ Coming Soon</h3>
+  <h3>⚡ Speed Boost</h3>
   <button onclick="addToCart('Speed Boost')">Add to Cart</button>
 </div>
 
 <div class="item">
-  <h3>💰 Coming Soon</h3>
+  <h3>💰 2x Coins</h3>
   <button onclick="addToCart('2x Coins')">Add to Cart</button>
 </div>
 
 <hr>
 
+<!-- CART -->
 <h2>🛒 Cart</h2>
 <ul id="cartList"></ul>
 
 <hr>
 
+<!-- CHECKOUT -->
 <h2>🧾 Checkout</h2>
 
-<input id="username" placeholder="Discord Username"><br><br>
-<textarea id="notes" placeholder="Notes..."></textarea><br><br>
+<input id="username" placeholder="Discord Username">
+<textarea id="notes" placeholder="Notes..."></textarea>
 
 <button onclick="sendOrder()">Send Order</button>
 
 <script>
 let cart = [];
-
-// ADD ITEM
+  
 function addToCart(item){
   cart.push(item);
   updateCart();
 }
 
-// SHOW CART
+function removeItem(i){
+  cart.splice(i, 1);
+  updateCart();
+}
+
 function updateCart(){
   const list = document.getElementById("cartList");
   list.innerHTML = "";
@@ -90,13 +178,8 @@ function updateCart(){
   });
 }
 
-// REMOVE ITEM
-function removeItem(i){
-  cart.splice(i, 1);
-  updateCart();
-}
+/* ---------------- DISCORD ORDER ---------------- */
 
-// SEND ORDER TO DISCORD
 function sendOrder(){
 
   const username = document.getElementById("username").value;
@@ -135,7 +218,40 @@ function sendOrder(){
   cart = [];
   updateCart();
 }
+
+/* ---------------- UPDATES (BELL SYSTEM) ---------------- */
+
+let updates = [
+  "🎉 Welcome to RBLX Shop!",
+  "🛒 VIP Access is now available!",
+  "⚡ More items coming soon!",
+  "📢 Discord orders enabled!"
+];
+
+function loadUpdates(){
+  const list = document.getElementById("updateList");
+  list.innerHTML = "";
+
+  updates.forEach(u => {
+    let div = document.createElement("div");
+    div.className = "update-item";
+    div.innerText = u;
+    list.appendChild(div);
+  });
+}
+
+function toggleUpdates(){
+  const panel = document.getElementById("updatePanel");
+
+  if(panel.style.display === "block"){
+    panel.style.display = "none";
+  } else {
+    panel.style.display = "block";
+    loadUpdates();
+  }
+}
 </script>
 
 </body>
 </html>
+  
