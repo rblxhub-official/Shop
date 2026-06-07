@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RBLX Shop</title>
+
+  <style>
+    body{
+      font-family:Arial;
+      background:#111;
+      color:white;
+      text-align:center;
+    }
+
+    .item{
+      background:#1e1e1e;
+      margin:10px;
+      padding:10px;
+      border-radius:10px;
+    }
+
+    button{
+      padding:8px 12px;
+      border:none;
+      background:#5865F2;
+      color:white;
+      border-radius:6px;
+      cursor:pointer;
+    }
+
+    input, textarea{
+      width:80%;
+      padding:10px;
+      margin:5px;
+      border-radius:6px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🛒 Game Pass Shop</h1>
+
+<div class="item">
+  <h3>⭐ VIP Access</h3>
+  <button onclick="addToCart('VIP Access')">Add to Cart</button>
+</div>
+
+<div class="item">
+  <h3>⚡ Coming Soon</h3>
+  <button onclick="addToCart('Speed Boost')">Add to Cart</button>
+</div>
+
+<div class="item">
+  <h3>💰 Coming Soon</h3>
+  <button onclick="addToCart('2x Coins')">Add to Cart</button>
+</div>
+
+<hr>
+
+<h2>🛒 Cart</h2>
+<ul id="cartList"></ul>
+
+<hr>
+
+<h2>🧾 Checkout</h2>
+
+<input id="username" placeholder="Discord Username"><br><br>
+<textarea id="notes" placeholder="Notes..."></textarea><br><br>
+
+<button onclick="sendOrder()">Send Order</button>
+
+<script>
+let cart = [];
+
+// ADD ITEM
+function addToCart(item){
+  cart.push(item);
+  updateCart();
+}
+
+// SHOW CART
+function updateCart(){
+  const list = document.getElementById("cartList");
+  list.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    let li = document.createElement("li");
+    li.innerHTML = item + " <button onclick='removeItem("+i+")'>X</button>";
+    list.appendChild(li);
+  });
+}
+
+// REMOVE ITEM
+function removeItem(i){
+  cart.splice(i, 1);
+  updateCart();
+}
+
+// SEND ORDER TO DISCORD
+function sendOrder(){
+
+  const username = document.getElementById("username").value;
+  const notes = document.getElementById("notes").value;
+
+  if(username === ""){
+    alert("Enter Discord username!");
+    return;
+  }
+
+  let items = cart.map(i => "• " + i).join("\n");
+
+  const webhookURL = "https://discord.com/api/webhooks/1513217518200688731/b82zKZRwQHZPZPB8xxXMRTECxcD4hyREehzPjAVWJj2O9Ep0_fHkrGpm_bnEPABy9Uvv";
+
+  const payload = {
+    content: "🛒 **New Order Received!**",
+    embeds: [{
+      title: "Order Details",
+      color: 5814783,
+      fields: [
+        { name: "👤 Username", value: username },
+        { name: "🛍️ Items", value: items || "Empty cart" },
+        { name: "📝 Notes", value: notes || "None" }
+      ]
+    }]
+  };
+
+  fetch(webhookURL, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(payload)
+  });
+
+  alert("Order sent to Discord!");
+
+  cart = [];
+  updateCart();
+}
+</script>
+
+</body>
+</html>
